@@ -10,4 +10,8 @@ PLLJ_PLLSPE_INFO.txt
 *.pin
 *.sld
 *.sof
+*.bak
+*.cdf
+*.bsf
+*.qws
 

@@ -57,4 +57,26 @@ set_global_assignment -name VHDL_FILE CENTRAL_UNIT.vhd
 set_global_assignment -name VHDL_FILE RUCH.vhd
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
+set_location_assignment PIN_104 -to B
+set_location_assignment PIN_23 -to CLK_50MHz
+set_location_assignment PIN_88 -to DOWN_IN
+set_location_assignment PIN_105 -to G
+set_location_assignment PIN_101 -to HSYNC
+set_location_assignment PIN_90 -to LEFT_IN
+set_location_assignment PIN_106 -to R
+set_location_assignment PIN_25 -to RESET
+set_location_assignment PIN_91 -to RIGHT_IN
+set_location_assignment PIN_87 -to TEST
+set_location_assignment PIN_86 -to TEST1
+set_location_assignment PIN_89 -to UP_IN
+set_location_assignment PIN_103 -to VSYNC
+set_global_assignment -name ENABLE_OCT_DONE OFF
+set_global_assignment -name USE_CONFIGURATION_DEVICE OFF
+set_global_assignment -name CRC_ERROR_OPEN_DRAIN OFF
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
+set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

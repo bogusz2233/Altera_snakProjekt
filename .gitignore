@@ -1,1 +1,13 @@
 /db
+*.rpt
+PLLJ_PLLSPE_INFO.txt
+*.done
+/incremental_db
+*.swp
+*.smsg
+*.summary
+*.jdi
+*.pin
+*.sld
+*.sof
+

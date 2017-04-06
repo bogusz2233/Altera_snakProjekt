@@ -1,0 +1,36 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: qsys-generate /dos/Projekty_quartus/jeny/unsaved.qsys --block-symbol-file --output-directory=/dos/Projekty_quartus/jeny/unsaved --family="Cyclone IV E" --part=EP4CE6E22C8
+Progress: Loading jeny/unsaved.qsys
+Progress: Reading input file
+Progress: Adding altpll_0 [altpll 15.0]
+Progress: Parameterizing module altpll_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: unsaved.altpll_0: altpll_0.areset_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.locked_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.phasedone_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
+Info: ip-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: qsys-generate /dos/Projekty_quartus/jeny/unsaved.qsys --synthesis=VHDL --output-directory=/dos/Projekty_quartus/jeny/unsaved/synthesis --family="Cyclone IV E" --part=EP4CE6E22C8
+Progress: Loading jeny/unsaved.qsys
+Progress: Reading input file
+Progress: Adding altpll_0 [altpll 15.0]
+Progress: Parameterizing module altpll_0
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Warning: unsaved.altpll_0: altpll_0.areset_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.locked_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.phasedone_conduit must be exported, or connected to a matching conduit.
+Warning: unsaved.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
+Info: unsaved: Generating unsaved "unsaved" for QUARTUS_SYNTH
+Info: altpll_0: "unsaved" instantiated altpll "altpll_0"
+Info: unsaved: Done "unsaved" with 2 modules, 2 files
+Info: ip-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

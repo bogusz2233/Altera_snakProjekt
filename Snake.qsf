@@ -84,3 +84,5 @@ set_global_assignment -name VHDL_FILE KSZTALTY.vhd
 set_global_assignment -name VHDL_FILE CENTRAL_UNIT.vhd
 set_global_assignment -name VHDL_FILE RUCH.vhd
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VHDL_FILE Controller_PS1.vhd
+set_global_assignment -name VHDL_FILE KOMUNIKACJA.vhd

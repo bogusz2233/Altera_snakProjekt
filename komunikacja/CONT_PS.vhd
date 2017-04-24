@@ -1,0 +1,133 @@
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+ENTITY CONT_PS IS
+	GENERIC(DELAY :INTEGER :=20);		-- DO SYMULACJI TEZ
+	PORT(
+			CLK 		: IN STD_LOGIC; 							--ZEGAR Z READ
+			CLK_READ	: IN STD_LOGIC;							-- TYLE CZEKAMY
+			
+			CMDPIN	: OUT STD_LOGIC;
+			ATT		: OUT 	STD_LOGIC;
+			CLKPIN	: OUT STD_LOGIC;
+			DATA		: IN STD_LOGIC;
+			
+			ODCZYT 	:OUT UNSIGNED(7 DOWNTO 0)
+	);
+END CONT_PS;
+
+ARCHITECTURE MAIN OF CONT_PS IS
+	TYPE DEC_STATE IS (WAITING, SLEEPSEND,SLEEPREC, SETUP,SENDCMD,CLKDOWN,READDA,CLKUP,FIRST,ASK,BEGINCOM,FIRREAD,DIRREAD,KEYREAD);
+	SIGNAL STAN	 :DEC_STATE :=WAITING;
+	SIGNAL NEXTSTATE :DEC_STATE;
+	
+	
+	-- DLA SHIFTA
+	SIGNAL CMD : UNSIGNED(7 DOWNTO 0):="00000000";	--	ROZKAZ DLA SHIFT
+
+	SIGNAL ZCZYTANIE	:UNSIGNED(7 DOWNTO 0);
+	SIGNAL LAPIEMY		:UNSIGNED(7 DOWNTO 0);
+	SIGNAL ATT_BUF    :STD_LOGIC;
+	
+	BEGIN
+	
+	ODCZYT<=LAPIEMY;
+	ATT<= ATT_BUF;
+	
+	PROCESS(CLK,CLK_READ)
+		VARIABLE LICZNIKBIT	:INTEGER RANGE 0 TO 8:=0;
+		VARIABLE LICZNIK 	:INTEGER RANGE 0 TO DELAY+1 :=0;
+		BEGIN 
+		IF RISING_EDGE (CLK) THEN
+		CASE STAN IS
+			WHEN WAITING =>
+				ATT_BUF <='1';
+				CLKPIN<= '1';
+				IF CLK_READ = '1' THEN 
+						STAN <= SETUP;
+				END IF;
+				
+			WHEN SLEEPSEND =>
+				IF (LICZNIK < DELAY) THEN LICZNIK := LICZNIK + 1;
+				ELSE
+					LICZNIK :=0;
+					LICZNIKBIT:= LICZNIKBIT + 1;
+					IF(LICZNIKBIT > 7) THEN
+						LICZNIKBIT := 0;
+						STAN <= NEXTSTATE;
+					ELSE
+						STAN <= SENDCMD;
+					END IF;
+				END IF;
+			WHEN SLEEPREC =>
+				IF (LICZNIK < DELAY) THEN LICZNIK := LICZNIK + 1;
+				ELSE
+					LICZNIK :=0;
+					STAN <= READDA;
+				END IF;
+		
+				WHEN SETUP => 
+					ATT_BUF  <='0';
+					STAN <= FIRST;
+				
+--------------------------------------------------------------------------------------------------
+--------------------SHIFT OUT--------------------------------------------------------------------
+				WHEN SENDCMD =>
+					CMDPIN<=CMD(LICZNIKBIT);
+					STAN <=CLKDOWN;
+				WHEN CLKDOWN =>
+					STAN <= SLEEPREC;
+					CLKPIN <= '0';
+					
+				WHEN READDA =>
+				
+						ZCZYTANIE <= (not DATA) & ZCZYTANIE (7 DOWNTO 1);
+				
+						STAN <= CLKUP;
+					
+				WHEN CLKUP =>
+					CLKPIN <= '1';
+					
+						STAN <= SLEEPSEND;
+				
+				WHEN FIRST=>
+					CMD<=to_unsigned(16#01#, 8);
+					STAN <= SENDCMD;
+					 NEXTSTATE <= ASK;
+					 
+				WHEN ASK =>
+						NEXTSTATE <= BEGINCOM;
+						STAN <=SENDCMD;
+						CMD<=to_unsigned(16#42#, 8);
+						
+				WHEN BEGINCOM =>
+					NEXTSTATE <= FIRREAD;
+					STAN <=SENDCMD;
+					CMD<=to_unsigned(16#ff#, 8);
+				WHEN FIRREAD=>
+					NEXTSTATE <= DIRREAD;
+					STAN <=SENDCMD;
+					CMD<=to_unsigned(16#ff#, 8);
+				
+				WHEN DIRREAD=>
+						LAPIEMY<=ZCZYTANIE;
+						NEXTSTATE <= KEYREAD;
+						CMD<=to_unsigned(16#ff#, 8);
+						
+						STAN <=SENDCMD;
+				WHEN KEYREAD =>
+				
+						ATT_BUF  <='1';
+						STAN <=WAITING;
+						CMD<=to_unsigned(16#01#, 8);
+					
+					
+		END CASE;
+		END IF;
+	END PROCESS;
+
+
+END MAIN;
+
+ 

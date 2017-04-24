@@ -3,36 +3,38 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 ENTITY CONV_50_MHZ_TO_HZ IS
+ generic (LICZ : Integer := 100;
+			 WID	: INTEGER := 70);
 PORT(
 		CLK_50MHZ_IN 		: IN STD_LOGIC;
-		CLK_50HZ_OUT		: OUT STD_LOGIC 
+		CLK_200HZ_OUT		: OUT STD_LOGIC 
 
 );
 END ENTITY;
 
 ARCHITECTURE MAIN OF CONV_50_MHZ_TO_HZ  IS
 
-	SIGNAL LICZNIK :INTEGER RANGE 0 TO 1000:=0;
+	
 	SIGNAL STAN 	:STD_LOGIC:= '0';
 	
 	BEGIN
 	
-	CLK_50HZ_OUT <= STAN;
-	
+		CLK_200HZ_OUT  <= STAN;
 	----------------------------------------------------------
 		PROCESS(CLK_50MHZ_IN )
-		
+			VARIABLE LICZNIK :INTEGER RANGE 0 TO LICZ + 1 :=0;
 			BEGIN
-				IF(LICZNIK >= 1000) THEN
-					LICZNIK <= 0;
-				ELSE 
-					LICZNIK <= LICZNIK + 1;
-				END IF;
 			
-				IF(LICZNIK = 1) THEN 
-					STAN <= NOT STAN;
-				END IF;
-		
+			IF RISING_EDGE (CLK_50MHZ_IN ) THEN
+			
+					IF(LICZNIK >= LICZ) THEN
+						LICZNIK := 0;
+						STAN <= '1';
+					ELSIF(LICZNIK > WID ) THEN
+						STAN<='0';
+					END IF;
+					LICZNIK := LICZNIK + 1;
+			END IF;
 		END PROCESS;
 
 END MAIN;

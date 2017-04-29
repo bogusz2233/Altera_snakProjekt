@@ -3,6 +3,7 @@ USE IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 use WORK.KSZTALTY.ALL;
+use WORK.FUNCTIONS.ALL;
 
 ENTITY CENTRAL_UNIT IS
 PORT(
@@ -26,8 +27,12 @@ PORT(
 			-------TESTOWY CZY GRACZ WSZEDL NA COINS ----
 			TEST_1 				:OUT STD_LOGIC;
 			----WEJSCIE RESETUJACE GRE----------
-			RESET					:IN STD_LOGIC
+			RESET					:IN STD_LOGIC;
+			WYS_SEG7_2			:OUT STD_LOGIC_VECTOR(6 DOWNTO 0);
+			WYS_SEG7_1			:OUT UNSIGNED(6 DOWNTO 0)
 		);
+-----------------------------------------------------------------------
+
 
 
 END CENTRAL_UNIT;
@@ -63,8 +68,20 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 		SIGNAL DRAW_COINS							:STD_LOGIC;
 		SIGNAL DOTKNIECIE							:STD_LOGIC;
 
+		
+		 
+		
+		
+		
 -----------------------------------------------------
 -----------------------------------------------------
+
+--TABLE SHOWING A TYPE OF OBJECT TO DISPLAY
+type COL is array (0 to 16, 0 to 16) of integer RANGE 0 TO 10;
+
+SIGNAL WYS_OBRAZU: COL;
+
+
 		BEGIN
 		-- aktualna pozycja rendowanego pisksela
 		X 	<=	TO_INTEGER (UNSIGNED(HPOS));
@@ -76,7 +93,7 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 		TLO	: PROSTOKAT(SIZEBCK_X, SIZEBCK_Y, POSITIONBCK_X, POSITIONBCK_Y, X, Y, DRAW_BACKGROUND);
 		COINS : CIRCLE(SIZEC_X, POSITIONC_X, POSITIONC_Y, X, Y, DRAW_COINS);
 
-		PROCES1: PROCESS(CLK)
+		DRAWING: PROCESS(CLK)
 			BEGIN
 					IF(DRAW_PLAYER = '1') THEN 
 						RGB<="100";
@@ -91,7 +108,7 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 			END PROCESS;
 ---------------------------- RUCH  ------------------------
 ----------------------UP,DOWN,LFT,RGT ---------------------
-		PROCES2: PROCESS(CLK_RUCH)
+		STERING: PROCESS(CLK_RUCH)
 			BEGIN
 			
 				IF(RESET = '1' OR DOTKNIECIE  = '1' )THEN 
@@ -123,8 +140,11 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 					END IF;
 				END IF;
 		END PROCESS;
-		
-		PROCES3: PROCESS(CLK_ZMIANA)
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+
+		UPDATE: PROCESS(CLK_ZMIANA)
 		--RUCH CIAGLE O 20 PIKSELI
 			BEGIN
 			IF(RESET = '1')THEN 
@@ -155,13 +175,19 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 			END IF;
 		END PROCESS;
 		
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------	
+	LOGIC:PROCESS(CLK_ZMIANA)
+		------POSITIN LOGIC OF PLAYER -----------------------------------------------		
+		VARIABLE ALL_PLACE :INTEGER := 640;
+		VARIABLE RES:INTEGER := 16;
+		VARIABLE XXX		 :INTEGER RANGE 0 TO RES + 1;
+		BEGIN
+		XXX := WYS_TO_LOGIC (ALL_PLACE,POSITIONBCK_X	,POSITIONBCK_X + SIZEBCK_X,POSITION_X , RES);
+		WYS_SEG7_1	<=TO_UNSIGNED(XXX,7);
 	
-		
 			
-			
-		
-		
-		
+	END PROCESS;			
 
 END MAIN;
 

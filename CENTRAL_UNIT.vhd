@@ -85,7 +85,7 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 		
 		SIGNAL PUNKTY		:INTEGER RANGE 0 TO 100 :=0;
 		
-		type T_2D is array (0 to 100, 0 to 1) of integer; 	---  	|	x_position	| 	--- 17 means empty
+		type T_2D is array (0 to 40, 0 to 1) of integer range -1 to 20; 	---  	|	x_position	| 	--- 20 means empty
 		signal ogon_tab : T_2D;										---	|	y_position	|	---
 -----------------------------------------------------
 -----------------------------------------------------
@@ -110,13 +110,13 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 			VARIABLE OGON_PIKSEL :BOOLEAN;
 			BEGIN
 					--MALUJEMY OGON
-					for I in 0 to 100 loop
-						IF((((POSITIONBCK_X + ogon_tab(I, 0) * SIZE_X) > X ) 			AND
-						((POSITIONBCK_X + ogon_tab(I, 0) * SIZE_X) < X +SIZE_X ))	AND
-						((POSITIONBCK_Y + ogon_tab(I, 1) * SIZE_Y) > Y )  				AND
-						((POSITIONBCK_Y + ogon_tab(I, 1) * SIZE_Y) < Y +SIZE_Y ))	
+					OGON_PIKSEL := FALSE;
+					for I in 0 to 40 loop
+						IF((((POSITIONBCK_X + ogon_tab(I, 0) * SIZE_X ) < X ) 			AND
+						((POSITIONBCK_X + ogon_tab(I, 0) * SIZE_X +  SIZE_X) > X  ))	AND
+						((POSITIONBCK_Y + ogon_tab(I, 1) * SIZE_Y ) < Y )  				AND
+						((POSITIONBCK_Y + ogon_tab(I, 1) * SIZE_Y + SIZE_Y) > Y  ))	
 						THEN OGON_PIKSEL := TRUE;
-						ELSE OGON_PIKSEL := FALSE;
 						END IF;
 					end loop;	
 					
@@ -185,13 +185,24 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 				CON_X :=(TO_INTEGER (UNSIGNED(RAND_LICZNIK)));
 				CON_Y :=((TO_INTEGER (UNSIGNED(RAND_LICZNIK))) * (TO_INTEGER (UNSIGNED(RAND_LICZNIK)))) MOD(16);
 				PUNKTY <= 0;
-				for I in 0 to 100 loop
+				for I in 0 to 40 loop
 					for IA in 0 to 1 loop
-						ogon_tab(I,IA) <= 17;
+						ogon_tab(I,IA) <= 20;
 					end loop;
 				end loop;
 			ELSIF(CLK_ZMIANA'EVENT AND CLK_ZMIANA ='1') THEN
 			
+				--------ogon----------------------------------------------
+			-----------------------------------------------------
+				for I in 0 to 39 loop
+					IF I < PUNKTY THEN
+						ogon_tab(I +1,0) <= ogon_tab(I,0);
+						ogon_tab(I +1,1) <= ogon_tab(I,1);
+					END IF;
+				end loop;	
+			
+			ogon_tab(0,0) <= PLY_X;
+			ogon_tab(0,1) <= PLY_Y;
 			
 			---ZMIANA POŁOZENIA GRACZA-----------------------
 				IF DIR_U = '1' THEN
@@ -212,18 +223,7 @@ ARCHITECTURE MAIN OF CENTRAL_UNIT IS
 			IF(PLY_X < 0) 		THEN PLY_X :=15;
 			ELSIF(PLY_X > 15) THEN PLY_X :=0;
 			END IF;
-			--------ogon----------------------------------------------
-			-----------------------------------------------------
-				for I in 0 to 99 loop
-					IF I < PUNKTY THEN
-						ogon_tab(I +1,0) <= ogon_tab(I,0);
-						ogon_tab(I +1,1) <= ogon_tab(I,1);
-					END IF;
-				end loop;	
-			
-			ogon_tab(0,0) <= PLY_X;
-			ogon_tab(0,1) <= PLY_Y;
-			
+		
 			-----------------------------------------------
 			
 			

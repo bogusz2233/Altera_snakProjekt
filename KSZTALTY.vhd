@@ -3,9 +3,12 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 PACKAGE KSZTALTY IS
+
+
 procedure PROSTOKAT (VARIABLE SIZE_X, SIZE_Y, POS_X, POS_Y :integer; 
 							SIGNAL CUR_X,CUR_Y :IN INTEGER; 
 							signal DRAW_RECT :out std_logic);
+						
 							
 procedure CIRCLE (VARIABLE SIZE, POS_X,POS_Y :integer; 
 							SIGNAL CUR_X,CUR_Y :IN INTEGER; 
